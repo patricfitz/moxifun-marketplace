@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Marketplace Listings – Electronics, Bags & Judaica</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f4f4f4;
+            color: #1e1e1e;
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            padding: 2rem 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            border-left: 6px solid #b8860b;
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+            color: #2c2c2c;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: #e9e9e9;
+            display: inline-block;
+            padding: 0.3rem 1.5rem;
+            border-radius: 40px;
+            margin-bottom: 1.5rem;
+            color: #2c3e2f;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #eaeaea;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .card-img:hover {
+            opacity: 0.9;
+        }
+
+        .card-content {
+            padding: 1.2rem 1.2rem 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2a1b;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #b8860b;
+            margin: 0.75rem 0;
+        }
+
+        .spec-list {
+            list-style: none;
+            padding-left: 0;
+            font-size: 0.9rem;
+            margin-top: 0.75rem;
+        }
+
+        .spec-list li {
+            padding: 0.2rem 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #2c5e2e;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-bottom: 0.8rem;
+        }
+
+        hr {
+            margin: 0.8rem 0;
+            border: 0;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .image-refs {
+            font-size: 0.75rem;
+            color: #777;
+            margin-top: 0.5rem;
+        }
+
+        /* LIGHTBOX MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+
+        .modal-img {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .close:hover {
+            color: #bbb;
+        }
+
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -50px;
+            color: white;
+            font-weight: bold;
+            font-size: 30px;
+            transition: 0.3s;
+            user-select: none;
+            background: rgba(0,0,0,0.5);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .prev {
+            left: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        @media (max-width: 700px) {
+            .prev, .next {
+                font-size: 20px;
+                padding: 12px;
+            }
+            .close {
+                font-size: 30px;
+                top: 10px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📸 Resale Listings – Complete Collection</h1>
+
+    <!-- ========================== HARD DRIVES & ACCESSORIES ========================== -->
+    <div class="section">
+        <div class="section-title">💾 Hard Drives & Accessories</div>
+        <div class="card-grid">
+
+            <!-- Samsung HD501LJ Hard Drive -->
+            <div class="card">
+                <img class="card-img" src="Samsung_HD.jpg" alt="Samsung HD501LJ hard drive" onerror="this.src='https://placehold.co/600x400?text=Samsung_HD.jpg'">
+                <div class="card-content">
+                    <div class="badge">NEW – Sealed</div>
+                    <div class="card-title">Samsung SpinPoint T166 HD501LJ</div>
+                    <div class="price">$30 CAD (starting price)</div>
+                    <ul class="spec-list">
+                        <li>500GB • 7200 RPM • SATA 3Gb/s</li>
+                        <li>16MB cache • 3.5″ form factor</li>
+                        <li>Model: HD501LJ • Brand new / empty</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Samsung_HD.jpg, Samsung_HD1.jpg, Samsung_HD2.jpg, Samsung_HD3.jpg</div>
+                </div>
+            </div>
+
+            <!-- iPad Pro Smart Keyboard -->
+            <div class="card">
+                <img class="card-img" src="iPad_Pro.jpg" alt="iPad Pro Smart Keyboard" onerror="this.src='https://placehold.co/600x400?text=iPad_Pro.jpg'">
+                <div class="card-content">
+                    <div class="badge">Used – Good condition</div>
+                    <div class="card-title">Apple Smart Keyboard for iPad Pro 10.5″</div>
+                    <div class="price">$30 CAD</div>
+                    <ul class="spec-list">
+                        <li>Model A1829 • Smart Connector</li>
+                        <li>Water‑resistant fabric • Folding cover</li>
+                        <li>Compatible: iPad Pro 10.5″, iPad Air 3rd gen, iPad 7/8/9 gen</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: iPad_Pro.jpg, iPad_Pro1.jpg, iPad_Pro2.jpg</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================== LAPTOPS ========================== -->
+    <div class="section">
+        <div class="section-title">💻 Laptops</div>
+        <div class="card-grid">
+
+            <!-- MacBook Pro Mid-2012 Retina -->
+            <div class="card">
+                <img class="card-img" src="Macbook_Pro.jpg" alt="MacBook Pro 2012 Retina" onerror="this.src='https://placehold.co/600x400?text=Macbook_Pro.jpg'">
+                <div class="card-content">
+                    <div class="badge">Used – Very Good</div>
+                    <div class="card-title">Apple MacBook Pro 15" Retina (Mid‑2012)</div>
+                    <div class="price">$370 CAD</div>
+                    <ul class="spec-list">
+                        <li><strong>Processor:</strong> 2.6 GHz Quad‑Core Intel Core i7 (Ivy Bridge 3720QM)</li>
+                        <li><strong>RAM:</strong> 8 GB 1600 MHz DDR3L (soldered)</li>
+                        <li><strong>Storage:</strong> 512 GB Flash Storage (original Apple SSD)</li>
+                        <li><strong>Graphics:</strong> NVIDIA GeForce GT 650M (1GB) + Intel HD 4000</li>
+                        <li><strong>Display:</strong> 15.4" Retina (2880x1800)</li>
+                        <li><strong>Battery:</strong> Good health (~7327 mAh)</li>
+                        <li><strong>Included:</strong> Two genuine Apple 85W MagSafe 2 adapters</li>
+                        <li>macOS Catalina installed • Minor bottom wear, no screen delamination</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Macbook_box.jpg, Macbook_Pro.jpg, Macbook_Pro1.jpg, Macbook_Pro2.jpg, Macbook_Pro3.jpg, Macbook_Pro4.jpg, Macbook_Pro5.jpg, Macbook_Pro6.jpg, Macbook_Pro7.jpg</div>
+                </div>
+            </div>
+
+            <!-- Acer Aspire E5-511-P8VU -->
+            <div class="card">
+                <img class="card-img" src="Acer_Aspire.jpg" alt="Acer Aspire E5-511" onerror="this.src='https://placehold.co/600x400?text=Acer_Aspire.jpg'">
+                <div class="card-content">
+                    <div class="badge">Used – Good</div>
+                    <div class="card-title">Acer Aspire E5-511-P8VU</div>
+                    <div class="price">$120 CAD (or best offer)</div>
+                    <ul class="spec-list">
+                        <li>Intel Pentium N3540 Quad‑Core (2.16–2.66 GHz)</li>
+                        <li>4GB DDR3L • 500GB HDD</li>
+                        <li>15.6″ HD • Windows 8.1 • DVD‑RW</li>
+                        <li>Includes original power adapter</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Acer_Aspire.jpg, Acer_Aspire1.jpg, Acer_Aspire2.jpg, Acer_Aspire3.jpg, Acer_Aspire4.jpg, Acer_adapter.jpg</div>
+                </div>
+            </div>
+
+            <!-- Dell Inspiron 15 5555 (AMD A8-7410) -->
+            <div class="card">
+                <img class="card-img" src="Dell_Inspiron.jpg" alt="Dell Inspiron 15" onerror="this.src='https://placehold.co/600x400?text=Dell_Inspiron.jpg'">
+                <div class="card-content">
+                    <div class="badge">Used – Good</div>
+                    <div class="card-title">Dell Inspiron 15 5000 (5555) Touchscreen</div>
+                    <div class="price">$130 CAD (or best offer)</div>
+                    <ul class="spec-list">
+                        <li>AMD A8-7410 APU • Radeon R5 Graphics</li>
+                        <li>6GB RAM (4.94GB usable) • 500GB HDD</li>
+                        <li>15.6″ HD multi‑touch (10 points)</li>
+                        <li>Includes USB‑C cable, USB Mini, coaxial cable for direct TV hookup</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Dell_Inspiron.jpg, Dell_Inspiron1.jpg, Dell_Inspiron2.jpg, Dell_Inspiron3.jpg, Dell_Inspiron4.jpg, c_type - mini_type.jpg, modem_cable.jpg, Hdmi_cable.jpg</div>
+                </div>
+            </div>
+
+            <!-- HP Pavilion dv6000 Entertainment PC -->
+            <div class="card">
+                <img class="card-img" src="Pavilion%20dv6000%20Entertainment%20PC.jpg" alt="HP Pavilion dv6000" onerror="this.src='https://placehold.co/600x400?text=Pavilion+dv6000.jpg'">
+                <div class="card-content">
+                    <div class="badge">Vintage / Parts</div>
+                    <div class="card-title">HP Pavilion dv6000 Entertainment PC</div>
+                    <div class="price">$50 CAD (or best offer)</div>
+                    <ul class="spec-list">
+                        <li>AMD Athlon 64 X2 TK-53 • 1GB RAM</li>
+                        <li>NVIDIA GeForce Go 6150</li>
+                        <li>Windows Vista Home • DVD±RW</li>
+                        <li>Includes power adapter • Battery holds reduced charge</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Pavilion dv6000 Entertainment PC.jpg, Pavilion dv6000 Entertainment PC1.jpg, Pavilion dv6000 Entertainment PC2.jpg, Pavilion dv6000 Entertainment PC3.jpg, Pavilion dv6000 Entertainment PC4.jpg</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================== BAGS & BACKPACKS ========================== -->
+    <div class="section">
+        <div class="section-title">🎒 Bags & Backpacks</div>
+        <div class="card-grid">
+
+            <!-- Versace Parfums Gym Bag -->
+            <div class="card">
+                <img class="card-img" src="Versace_tote.jpg" alt="Versace gym bag" onerror="this.src='https://placehold.co/600x400?text=Versace_tote.jpg'">
+                <div class="card-content">
+                    <div class="badge">Promotional gift – Very good</div>
+                    <div class="card-title">Versace Parfums Gym Bag (Dark Grey)</div>
+                    <div class="price">$45 CAD (or best offer)</div>
+                    <ul class="spec-list">
+                        <li>Spacious main compartment • Two zippered side pockets</li>
+                        <li>Durable polyester/nylon • Removable shoulder strap</li>
+                        <li>Originally a men’s fragrance GWP (Eros / Pour Homme)</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Versace_tote.jpg, Versace_tote1.jpg, Versace_tote2.jpg</div>
+                </div>
+            </div>
+
+            <!-- Roots Backpack (New) -->
+            <div class="card">
+                <img class="card-img" src="Roots_knapsack.jpg" alt="Roots backpack" onerror="this.src='https://placehold.co/600x400?text=Roots_knapsack.jpg'">
+                <div class="card-content">
+                    <div class="badge">New with tags</div>
+                    <div class="card-title">Roots Recycled Backpack – Black</div>
+                    <div class="price">$39.99 (firm)</div>
+                    <ul class="spec-list">
+                        <li>33L capacity • Fits 15.6″ laptop</li>
+                        <li>Rainproof zippers & materials • Made from recycled plastic bottles</li>
+                        <li>Padded back & adjustable straps • Model RTS6902</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Roots_knapsack.jpg, Roots_knapsack1.jpg, Roots_knapsack2.jpg, Roots_knapsack3.jpg</div>
+                </div>
+            </div>
+
+            <!-- Vans Backpack (Fair condition) -->
+            <div class="card">
+                <img class="card-img" src="Vans_Bag.jpg" alt="Vans cream backpack" onerror="this.src='https://placehold.co/600x400?text=Vans_Bag.jpg'">
+                <div class="card-content">
+                    <div class="badge">Second‑hand – Fair condition</div>
+                    <div class="card-title">Vans Women’s Backpack – Cream / Rose Print</div>
+                    <div class="price">$25 CAD (or best offer)</div>
+                    <ul class="spec-list">
+                        <li>Charming rose floral pattern • Lightweight</li>
+                        <li>Visible signs of wear – see photos</li>
+                        <li>Great for casual everyday use</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Vans_Bag.jpg, Vans_Bag1.jpg, Vans_Bag2.jpg</div>
+                </div>
+            </div>
+
+            <!-- Michael Kors Leather Knapsack -->
+            <div class="card">
+                <img class="card-img" src="MK_Knapsack.jpg" alt="Michael Kors leather backpack" onerror="this.src='https://placehold.co/600x400?text=MK_Knapsack.jpg'">
+                <div class="card-content">
+                    <div class="badge">Used – Good</div>
+                    <div class="card-title">Michael Kors Black Leather Knapsack (Men’s)</div>
+                    <div class="price">$50 – $150 CAD (depending on condition)</div>
+                    <ul class="spec-list">
+                        <li>Genuine leather • “Est. 1981” • Fall 2019 collection</li>
+                        <li>Style number needed for exact pricing</li>
+                        <li>Sturdy, masculine design • Ideal for daily carry</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: MK_Knapsack.jpg, Mk_Knapsack1.jpg, Mk_Knapsack2.jpg</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================== CHALICE ========================== -->
+    <div class="section">
+        <div class="section-title">🕍 Judaica – Sterling Silver</div>
+        <div class="card-grid">
+            <div class="card">
+                <img class="card-img" src="Zadok_sterling.jpg" alt="Zadok sterling chalice" onerror="this.src='https://placehold.co/600x400?text=Zadok_sterling.jpg'">
+                <div class="card-content">
+                    <div class="badge">Authentic – Hallmarked</div>
+                    <div class="card-title">Zadok Sterling Silver Kiddush Chalice (Israel)</div>
+                    <div class="price">$300 CAD (or best offer)</div>
+                    <ul class="spec-list">
+                        <li>7″ tall • 4.0 oz (113.4 g) total weight</li>
+                        <li>Ornate base, stem & cup • Ten hanging pearl‑shaped dots</li>
+                        <li>Clear “Zaduk” (Zadok) / Sterling / Israel hallmarks</li>
+                        <li>No dents or repairs – light patina</li>
+                    </ul>
+                    <hr>
+                    <div class="image-refs">📸 Images: Zadok_sterling.jpg, Zadok_sterling1.jpg, Zadok_sterling2.jpg, Zadok_sterling3.jpg</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bundle offer for three bags -->
+    <div style="margin-top: 2rem; padding: 1rem; background: #fef7e0; border-radius: 1rem; text-align: center;">
+        <p style="font-size: 1.1rem;">✨ <strong>Bundle deal:</strong> Take all three bags (Versace + Roots + Vans) for <strong>$100 CAD</strong> ✨</p>
+        <p style="font-size: 0.9rem; color: #555;">Contact for combined shipping or local pickup in Toronto.</p>
+    </div>
+</div>
+
+<!-- LIGHTBOX MODAL -->
+<div id="lightboxModal" class="modal">
+    <span class="close">&times;</span>
+    <div class="modal-content">
+        <img class="modal-img" id="lightboxImage" src="" alt="Gallery">
+        <a class="prev">&#10094;</a>
+        <a class="next">&#10095;</a>
+    </div>
+</div>
+
+<script>
+    // Helper: extract list of image filenames from .image-refs text
+    function extractImageList(refElement) {
+        let text = refElement.innerText;
+        // Remove the "📸 Images: " prefix (including the emoji and colon)
+        let parts = text.split(/Images:\s*/);
+        if (parts.length < 2) return [];
+        let listStr = parts[1];
+        // Split by commas and trim each filename
+        let filenames = listStr.split(',').map(s => s.trim());
+        return filenames.filter(f => f.length > 0);
+    }
+
+    // Store for each card its image array and current index
+    let currentCardImages = [];
+    let currentIndex = 0;
+
+    const modal = document.getElementById('lightboxModal');
+    const modalImg = document.getElementById('lightboxImage');
+    const closeBtn = document.querySelector('.close');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+
+    // Attach click listeners to all .card-img elements
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const imgElement = card.querySelector('.card-img');
+        const refDiv = card.querySelector('.image-refs');
+        if (!imgElement || !refDiv) return;
+
+        const imageList = extractImageList(refDiv);
+        if (imageList.length === 0) return;
+
+        // Store the image list on the img element for later use
+        imgElement.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentCardImages = imageList;
+            currentIndex = 0;
+            // Find the clicked image filename (the src base name)
+            const clickedSrc = imgElement.getAttribute('src');
+            // Try to find the index of the clicked image in the list
+            let foundIndex = imageList.findIndex(f => f === clickedSrc);
+            if (foundIndex !== -1) currentIndex = foundIndex;
+            // Display the image
+            showImage(currentIndex);
+            modal.style.display = 'flex';
+        });
+    });
+
+    function showImage(index) {
+        if (currentCardImages.length === 0) return;
+        let filename = currentCardImages[index];
+        if (!filename) return;
+        // Use the same directory as the HTML file
+        modalImg.src = filename;
+        modalImg.alt = 'Image ' + (index+1);
+    }
+
+    function nextImage() {
+        if (currentCardImages.length === 0) return;
+        currentIndex = (currentIndex + 1) % currentCardImages.length;
+        showImage(currentIndex);
+    }
+
+    function prevImage() {
+        if (currentCardImages.length === 0) return;
+        currentIndex = (currentIndex - 1 + currentCardImages.length) % currentCardImages.length;
+        showImage(currentIndex);
+    }
+
+    // Event listeners for navigation
+    nextBtn.addEventListener('click', nextImage);
+    prevBtn.addEventListener('click', prevImage);
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside the image area
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (modal.style.display === 'flex') {
+            if (e.key === 'ArrowRight') nextImage();
+            else if (e.key === 'ArrowLeft') prevImage();
+            else if (e.key === 'Escape') modal.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>
